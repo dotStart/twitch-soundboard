@@ -25,6 +25,7 @@ import (
 	"github.com/op/go-logging"
 	"golang.org/x/sync/errgroup"
 	"os"
+	"time"
 )
 
 func main() {
@@ -33,11 +34,16 @@ func main() {
 	var sampleRate uint
 	var queueSize uint
 	var volume float64
+	var globalRateLimit time.Duration
+	var userRateLimit time.Duration
+
 	var helpFlag bool
 
 	flag.StringVar(&logLevel, "log-level", "info", "alters the log granularity")
 	flag.BoolVar(&helpFlag, "help", false, "displays this message")
 	flag.StringVar(&registryPath, "registry", "sounds", "specifies the location at which sound files will be stored")
+	flag.DurationVar(&globalRateLimit, "global-rate-limit", 2*time.Second, "specifies the global rate limit")
+	flag.DurationVar(&userRateLimit, "user-rate-limit", 10*time.Second, "specifies the user rate limit")
 	flag.UintVar(&sampleRate, "sample-rate", 44100, "specifies the desired sample rate")
 	flag.UintVar(&queueSize, "queue-size", 8, "specifies how many sounds may queue up at once")
 	flag.Float64Var(&volume, "volume", -1, "specifies the volume at which sounds will play")
@@ -96,7 +102,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	b := bot.New(reg, name, token)
+	b := bot.New(reg, bot.Config{
+		Name:            name,
+		Token:           token,
+		GlobalRateLimit: globalRateLimit,
+		UserRateLimit:   userRateLimit,
+	})
 
 	for _, ch := range channels {
 		b.Join(ch)

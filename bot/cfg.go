@@ -16,25 +16,12 @@
  */
 package bot
 
-import (
-	"github.com/gempir/go-twitch-irc"
-	"strings"
-)
+import "time"
 
-func (b *Bot) handleConnect() {
-	b.logger.Infof("established connection to Twitch")
-}
+type Config struct {
+	Name  string
+	Token string
 
-func (b *Bot) handlePrivateMessage(msg twitch.PrivateMessage) {
-	if !strings.HasPrefix(msg.Message, "!") {
-		return
-	}
-
-	if !b.checkLimit(msg.User.ID) {
-		b.logger.Debugf("Ignoring command from %s due to rate limit", msg.User.ID)
-		return
-	}
-	b.updateLimit(msg.User.ID)
-
-	b.reg.Play(msg.Message[1:])
+	GlobalRateLimit time.Duration
+	UserRateLimit   time.Duration
 }

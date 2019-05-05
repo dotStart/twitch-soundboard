@@ -21,22 +21,32 @@ import (
 	"github.com/gempir/go-twitch-irc"
 	"github.com/hashicorp/errwrap"
 	"github.com/op/go-logging"
+	"time"
 )
 
 type Bot struct {
 	logger *logging.Logger
+	cfg    Config
 
 	reg    *registry.SoundRegistry
 	client *twitch.Client
+
+	lastCommand     time.Time
+	lastUserCommand map[string]time.Time
 }
 
-func New(reg *registry.SoundRegistry, name string, token string) *Bot {
-	client := twitch.NewClient(name, token)
+func New(reg *registry.SoundRegistry, cfg Config) *Bot {
+	client := twitch.NewClient(cfg.Name, cfg.Token)
 
 	bot := &Bot{
 		logger: logging.MustGetLogger("bot"),
+		cfg:    cfg,
+
 		reg:    reg,
 		client: client,
+
+		lastCommand:     time.Unix(0, 0),
+		lastUserCommand: make(map[string]time.Time),
 	}
 
 	client.OnConnect(bot.handleConnect)
