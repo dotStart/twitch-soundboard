@@ -18,6 +18,7 @@ package registry
 
 import (
 	"github.com/faiface/beep"
+	"github.com/faiface/beep/effects"
 	"github.com/faiface/beep/speaker"
 )
 
@@ -35,7 +36,6 @@ func (sr *SoundRegistry) PollQueue() {
 }
 
 func (sr *SoundRegistry) playSound(name string) {
-
 	streamer, exists := sr.sounds[name]
 	if !exists {
 		sr.logger.Debugf("ignoring play request - no such sound: %s", name)
@@ -50,8 +50,15 @@ func (sr *SoundRegistry) playSound(name string) {
 
 	sr.logger.Infof("playing sound \"%s\"", name)
 
+	volume := &effects.Volume{
+		Streamer: streamer,
+		Base:     2,
+		Volume:   sr.cfg.Volume,
+		Silent:   false,
+	}
+
 	done := make(chan bool)
-	speaker.Play(beep.Seq(streamer, beep.Callback(func() {
+	speaker.Play(beep.Seq(volume, beep.Callback(func() {
 		done <- true
 	})))
 

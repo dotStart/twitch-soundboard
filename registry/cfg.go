@@ -22,6 +22,7 @@ type Config struct {
 	Path       string
 	SampleRate beep.SampleRate
 	QueueSize  uint
+	Volume     float64
 }
 
 func DefaultConfig() Config {
@@ -29,5 +30,6 @@ func DefaultConfig() Config {
 		Path:       "sounds",
 		SampleRate: 41000,
 		QueueSize:  8,
+		Volume:     -1,
 	}
 }

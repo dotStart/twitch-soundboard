@@ -32,6 +32,7 @@ func main() {
 	var registryPath string
 	var sampleRate uint
 	var queueSize uint
+	var volume float64
 	var helpFlag bool
 
 	flag.StringVar(&logLevel, "log-level", "info", "alters the log granularity")
@@ -39,6 +40,7 @@ func main() {
 	flag.StringVar(&registryPath, "registry", "sounds", "specifies the location at which sound files will be stored")
 	flag.UintVar(&sampleRate, "sample-rate", 44100, "specifies the desired sample rate")
 	flag.UintVar(&queueSize, "queue-size", 8, "specifies how many sounds may queue up at once")
+	flag.Float64Var(&volume, "volume", -1, "specifies the volume at which sounds will play")
 
 	flag.Parse()
 
@@ -84,6 +86,7 @@ func main() {
 	cfg.Path = registryPath
 	cfg.SampleRate = beep.SampleRate(sampleRate)
 	cfg.QueueSize = queueSize
+	cfg.Volume = volume
 
 	var g errgroup.Group
 
