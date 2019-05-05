@@ -73,3 +73,11 @@ func (sr *SoundRegistry) Play(name string) {
 		sr.logger.Debugf("queue overflow - ignoring sound request for \"%s\"", name)
 	}
 }
+
+func (sr *SoundRegistry) ListSounds() []string {
+	keys := make([]string, 0)
+	for key := range sr.sounds {
+		keys = append(keys, key)
+	}
+	return keys
+}

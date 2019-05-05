@@ -36,5 +36,25 @@ func (b *Bot) handlePrivateMessage(msg twitch.PrivateMessage) {
 	}
 	b.updateLimit(msg.User.ID)
 
+	if strings.HasPrefix(msg.Message, "!sounds") {
+		var link string
+		if b.indexLink == nil {
+			var err error
+			link, err = b.uploadSoundList()
+			if err != nil {
+				b.logger.Errorf("failed to upload sounds list: %s", err)
+				b.client.Say(msg.Channel, "@"+msg.User.Name+": Failed to upload sound list")
+				return
+			}
+
+			b.indexLink = &link
+		} else {
+			link = *b.indexLink
+		}
+
+		b.client.Say(msg.Channel, "@"+msg.User.Name+": "+link)
+		return
+	}
+
 	b.reg.Play(msg.Message[1:])
 }

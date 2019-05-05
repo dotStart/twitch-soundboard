@@ -31,6 +31,8 @@ type Bot struct {
 	reg    *registry.SoundRegistry
 	client *twitch.Client
 
+	indexLink *string
+
 	lastCommand     time.Time
 	lastUserCommand map[string]time.Time
 }
