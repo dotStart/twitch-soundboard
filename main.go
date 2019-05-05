@@ -77,6 +77,7 @@ func main() {
 
 	logger := logging.MustGetLogger("soundboard")
 	logger.Infof("set log level to %s", level)
+	logger.Infof("fetching sounds from %s", registryPath)
 	logger.Infof("set sample rate to %d Hz", sampleRate)
 
 	cfg := registry.DefaultConfig()
